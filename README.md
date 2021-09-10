@@ -5,6 +5,11 @@ R code accompanying paper:
 
 BRADSHAW, CJA, S HERRANDO-PÉREZ. In review. Component and ensemble density feedbacks decoupled by density-independent processes. 
 
+Prof Corey J. A. Bradshaw <br>
+<a href="http://globalecologyflinders.com" target="_blank">Global Ecology</a>, <a href="http://flinders.edu.au" target="_blank">Flinders University</a>, Adelaide, Australia <br>
+September 2021 <br>
+<a href=mailto:corey.bradshaw@flinders.edu.au>e-mail</a> <br>
+
 ## INSTRUCTIONS:
 
 1. Run initial base population models (<code>baseModels.R</code>
@@ -27,6 +32,23 @@ BRADSHAW, CJA, S HERRANDO-PÉREZ. In review. Component and ensemble density feed
     - <code>StatKstochDeclCatastrophe.R</code>: declining (-0.001) mean stochastic K (constant variance); generationally scaled catastrophe
     - <code>StatStableNoDFCatastrophe.R</code>: stable mean trajectory with no density feedback (no K)
 
+## Requires the following libraries:
+- <code>dplyr</code>
+- <code>plotly</code>
+- <code>expss</code>
+- <code>car</code>
+- <code>Hmisc</code>
+- <code>cluster</code>
+- <code>bootstrap</code>
+- <code>data.table</code>
+- <code>ggplot2</code>
+- <code>ggridges</code>
+- <code>ggpubr</code>
+- <code>biostat</code>
+- <code>reshape2</code>
+
+## and following source-code file:
+- <code>matrixOperators.R</code>
 
 
 
