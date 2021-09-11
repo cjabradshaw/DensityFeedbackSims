@@ -3,9 +3,9 @@ Stochastic simulations of population abundance with known component density feed
 
 R code accompanying paper:
 
-BRADSHAW, CJA, S HERRANDO-PÉREZ. In review. Component and ensemble density feedbacks decoupled by density-independent processes. 
+<a href="http://scholar.google.com.au/citations?sortby=pubdate&hl=en&user=1sO0O3wAAAAJ&view_op=list_works">BRADSHAW, CJA</a>, <a href="https://scholar.google.com.au/citations?hl=en&user=-BSGg1MAAAAJ">S HERRANDO-PÉREZ</a>. In review. Component and ensemble density feedbacks decoupled by density-independent processes. 
 
-Prof Corey J. A. Bradshaw <br>
+Prof <a href="http://scholar.google.com.au/citations?sortby=pubdate&hl=en&user=1sO0O3wAAAAJ&view_op=list_works">Corey J. A. Bradshaw</a> <br>
 <a href="http://globalecologyflinders.com" target="_blank">Global Ecology</a>, <a href="http://flinders.edu.au" target="_blank">Flinders University</a>, Adelaide, Australia <br>
 September 2021 <br>
 <a href=mailto:corey.bradshaw@flinders.edu.au>e-mail</a> <br>
@@ -14,7 +14,7 @@ September 2021 <br>
 
 1. Run initial base population models (<code>baseModels.R</code>). More details and justification of the model components can be found in:
     - Bradshaw, CJA, CN Johnson, J Llewelyn, V Weisbecker, G Strona, F Saltré. 2021. <a href="http://doi.org/10.7554/eLife.63870">Relative demographic susceptibility does not explain the extinction chronology of Sahul’s megafauna</a>. <em>eLife</em> 10: e63870. doi:10.7554/eLife.63870
-    - and the associated Github repository <a href="https://github.com/cjabradshaw/MegafaunaSusceptibility">here</a>.
+    - and its associated Github repository <a href="https://github.com/cjabradshaw/MegafaunaSusceptibility">here</a>
 
 3. Run projection scenarios using outputs from Step 1:
     - <code>stableCatastrophe.R</code>: stable fixed K with generationally scaled catastrophe
