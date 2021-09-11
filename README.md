@@ -12,7 +12,7 @@ September 2021 <br>
 
 ## INSTRUCTIONS:
 
-1. Run initial base population models (<code>baseModels.R</code>
+1. Run initial base population models (<code>baseModels.R</code>)
 2. Run projection scenarios using outputs from Step 1:
     - <code>stableCatastrophe.R</code>: stable fixed K with generationally scaled catastrophe
     - <code>pulseCatastrophe.R</code>: stable fixed K with 90% mortality pulse disturbance at 20G; generationally scaled catastrophe
