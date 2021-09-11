@@ -17,23 +17,23 @@ September 2021 <br>
     - and its associated Github repository <a href="https://github.com/cjabradshaw/MegafaunaSusceptibility">here</a>
 
 3. Run projection scenarios using outputs from Step 1:
-    - <code>stableCatastrophe.R</code>: stable fixed carrying capacity (<em>K</em>) with generationally scaled catastrophe
-    - <code>pulseCatastrophe.R</code>: stable fixed <em>K</em> with 90% mortality pulse disturbance at 20<em>G</em> (generations); generationally scaled catastrophe
-    - <code>r001-01Catastrophe.R</code>: stable fixed<em>K</em>K with density-independent mortality to cause mean <em>r</em> = -0.001 or -0.01 (user choice); generationally scaled catastrophe
-    - <code>KstochCatastrophe.R</code>: stable mean stochastic <em>K</em> (constant variance); generationally scaled catastrophe
-    - <code>KstochVarIncCatastrophe.R</code>: stable mean stochastic <em>K</em> (variance doubles over projection interval); generationally scaled catastrophe
-    - <code>KstochDeclCatastrophe.R</code>: declining (-0.001) mean stochastic <em>K</em> (constant variance); generationally scaled catastrophe
-    - <code>NoDFstableCatastrophe.R</code>: stable mean trajectory with no density feedback (no <em>K</em>)
+    - <code>stableCatastrophe.R</code>: stable, fixed carrying capacity (<em>K</em>) with generationally scaled catastrophe
+    - <code>pulseCatastrophe.R</code>: stable, fixed <em>K</em> with 90% mortality pulse disturbance at 20<em>G</em> (generations); generationally scaled catastrophe
+    - <code>r001-01Catastrophe.R</code>: stable, fixed <em>K</em> with density-independent mortality to cause mean <em>r</em> = -0.001 or -0.01 (user choice); generationally scaled catastrophe
+    - <code>KstochCatastrophe.R</code>: stable, mean stochastic <em>K</em> (constant variance); generationally scaled catastrophe
+    - <code>KstochVarIncCatastrophe.R</code>: stable, mean stochastic <em>K</em> (variance doubles over projection interval); generationally scaled catastrophe
+    - <code>KstochDeclCatastrophe.R</code>: declining (-0.001), mean stochastic <em>K</em> (constant variance); generationally scaled catastrophe
+    - <code>NoDFstableCatastrophe.R</code>: stable, mean trajectory with no density feedback (no <em>K</em>)
 4. Import resulting .RData files from Step 2 to estimate evidence and strength of ensemble density feedback (<code>logisticGrowthFit.R</code>
 5. Import resulting .RData files from Step 2 to estimate stationarity metrics
-    - <code>StatStableCatastrophe.R</code>: stable fixed <em>K</em> with generationally scaled catastrophe
-    - <code>StatPulseCatastrophe.R</code>: stable fixed <em>K</em> with 90% mortality pulse disturbance at 20<em>G</em>; generationally scaled catastrophe
-    - <code>Statr001Catastrophe.R</code>: stable fixed <em>K</em> with density-independent mortality to cause mean <em>r</em> = -0.001; generationally scaled catastrophe
-    - <code>Statr01Catastrophe.R</code>: stable fixed <em>K</em> with density-independent mortality to cause mean <em>r</em> = -0.01; generationally scaled catastrophe
-    - <code>StatKstochCatastrophe.R</code>: stable mean stochastic <em>K</em> (constant variance); generationally scaled catastrophe
-    - <code>StatKstochVarIncCatastrophe.R</code>: stable mean stochastic <em>K</em> (variance doubles over projection interval); generationally scaled catastrophe
-    - <code>StatKstochDeclCatastrophe.R</code>: declining (-0.001) mean stochastic <em>K</em> (constant variance); generationally scaled catastrophe
-    - <code>StatStableNoDFCatastrophe.R</code>: stable mean trajectory with no density feedback (no <em>K</em>)
+    - <code>StatStableCatastrophe.R</code>: stable, fixed <em>K</em> with generationally scaled catastrophe
+    - <code>StatPulseCatastrophe.R</code>: stable, fixed <em>K</em> with 90% mortality pulse disturbance at 20<em>G</em>; generationally scaled catastrophe
+    - <code>Statr001Catastrophe.R</code>: stable, fixed <em>K</em> with density-independent mortality to cause mean <em>r</em> = -0.001; generationally scaled catastrophe
+    - <code>Statr01Catastrophe.R</code>: stable, fixed <em>K</em> with density-independent mortality to cause mean <em>r</em> = -0.01; generationally scaled catastrophe
+    - <code>StatKstochCatastrophe.R</code>: stable, mean stochastic <em>K</em> (constant variance); generationally scaled catastrophe
+    - <code>StatKstochVarIncCatastrophe.R</code>: stable, mean stochastic <em>K</em> (variance doubles over projection interval); generationally scaled catastrophe
+    - <code>StatKstochDeclCatastrophe.R</code>: declining, (-0.001) mean stochastic <em>K</em> (constant variance); generationally scaled catastrophe
+    - <code>StatStableNoDFCatastrophe.R</code>: stable, mean trajectory with no density feedback (no <em>K</em>)
 
 ## Requires the following libraries
 - <code>dplyr</code>
