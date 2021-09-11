@@ -1,4 +1,4 @@
-# DensityFeedbackSims
+# Density-Feedback Simulations
 Stochastic simulations of population abundance with known component density feedback on survival to test for ability to return ensemble feedback signal
 
 R code accompanying paper:
@@ -10,7 +10,7 @@ Prof <a href="http://scholar.google.com.au/citations?sortby=pubdate&hl=en&user=1
 September 2021 <br>
 <a href=mailto:corey.bradshaw@flinders.edu.au>e-mail</a> <br>
 
-## INSTRUCTIONS:
+## INSTRUCTIONS
 
 1. Run initial base population models (<code>baseModels.R</code>). More details and justification of the model components can be found in:
     - Bradshaw, CJA, CN Johnson, J Llewelyn, V Weisbecker, G Strona, F Saltré. 2021. <a href="http://doi.org/10.7554/eLife.63870">Relative demographic susceptibility does not explain the extinction chronology of Sahul’s megafauna</a>. <em>eLife</em> 10: e63870. doi:10.7554/eLife.63870
@@ -35,7 +35,7 @@ September 2021 <br>
     - <code>StatKstochDeclCatastrophe.R</code>: declining (-0.001) mean stochastic K (constant variance); generationally scaled catastrophe
     - <code>StatStableNoDFCatastrophe.R</code>: stable mean trajectory with no density feedback (no K)
 
-## Requires the following libraries:
+## Requires the following libraries
 - <code>dplyr</code>
 - <code>plotly</code>
 - <code>expss</code>
@@ -50,7 +50,7 @@ September 2021 <br>
 - <code>biostat</code>
 - <code>reshape2</code>
 
-## and following source-code file:
+## and following source-code file
 - <code>matrixOperators.R</code>
 
 
