@@ -19,7 +19,7 @@ September 2021 <br>
 3. Run projection scenarios using outputs from Step 1:
     - <code>stableCatastrophe.R</code>: stable, fixed carrying capacity (<em>K</em>) with generationally scaled catastrophe
     - <code>pulseCatastrophe.R</code>: stable, fixed <em>K</em> with 90% mortality pulse disturbance at 20<em>G</em> (generations); generationally scaled catastrophe
-    - <code>r001-01Catastrophe.R</code>: stable, fixed <em>K</em> with density-independent mortality to cause mean <em>r</em> = -0.001 or -0.01 (user choice); generationally scaled catastrophe
+    - <code>r001-01Catastrophe.R</code>: stable, fixed <em>K</em> with density-independent mortality to cause mean population growth rate (<em>r</em>) to be -0.001 or -0.01 (user choice); generationally scaled catastrophe
     - <code>KstochCatastrophe.R</code>: stable, mean stochastic <em>K</em> (constant variance); generationally scaled catastrophe
     - <code>KstochVarIncCatastrophe.R</code>: stable, mean stochastic <em>K</em> (variance doubles over projection interval); generationally scaled catastrophe
     - <code>KstochDeclCatastrophe.R</code>: declining (-0.001), mean stochastic <em>K</em> (constant variance); generationally scaled catastrophe
