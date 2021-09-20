@@ -1,4 +1,7 @@
 # Density-Feedback Simulations
+
+<img align="right" src="thylacine.png" alt="thylacine" width="200" style="margin-top: 20px">
+
 Stochastic simulations of population abundance with known component density feedback on survival to test for ability to return ensemble feedback signal
 
 R code accompanying paper (pre-print; currently in review elsewhere):
