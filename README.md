@@ -42,8 +42,8 @@ More details and justification of the model components can be found in:
     - <code>KstochVarIncCatastrophe.R</code>: stable, mean stochastic <em>K</em> (variance doubles over projection interval); generationally scaled catastrophe
     - <code>KstochDeclCatastrophe.R</code>: declining (-0.001), mean stochastic <em>K</em> (constant variance); generationally scaled catastrophe
     - <code>NoDFstableCatastrophe.R</code>: stable, mean trajectory with no density feedback (no <em>K</em>)
-3. Import resulting .RData files from Step 2 to estimate evidence and strength of ensemble density feedback (<code>logisticGrowthFit.R</code>)
-4. Import resulting .RData files from Step 2 to estimate stationarity metrics
+3. Import resulting .RData files from Step 2 to estimate evidence and strength of ensemble density feedback (<code>logisticGrowthFit.R</code>; in the <a href="https://github.com/cjabradshaw/DensityFeedbackSims/tree/main/ensembleDF"><em>ensembleDF</em></a> folder)
+4. Import resulting .RData files from Step 2 to estimate stationarity metrics (the following scripts are in the <a href="https://github.com/cjabradshaw/DensityFeedbackSims/tree/main/stationarity"><em>stationarity</em></a> folder):
     - <code>StatStableCatastrophe.R</code>: stable, fixed <em>K</em> with generationally scaled catastrophe
     - <code>StatPulseCatastrophe.R</code>: stable, fixed <em>K</em> with 90% mortality pulse disturbance at 20<em>G</em>; generationally scaled catastrophe
     - <code>Statr001Catastrophe.R</code>: stable, fixed <em>K</em> with density-independent mortality to cause mean <em>r</em> = -0.001; generationally scaled catastrophe
