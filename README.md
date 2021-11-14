@@ -19,7 +19,7 @@ September 2021 <br>
 
 ## INSTRUCTIONS
 
-1. Run initial base population models (<code>baseModels.R</code>).
+1. Run initial base population models (<code>baseModels.R</code>; in the <a href="https://github.com/cjabradshaw/DensityFeedbackSims/tree/main/basemodels"><em>basemodels</em></a> folder)
 
 Models are based on the demography of the following genera/species:
 - VOMBATIFORM HERBIVORES: <a href="https://australian.museum/learn/australia-over-time/extinct-animals/diprotodon-optatum/"><i>Diprotodon</i></a><sup>†</sup>, <a href="https://australian.museum/learn/animals/mammals/palorchestes-azeal/"><i>Palorchestes</i></a><sup>†</sup>, <a href="http://www.megafauna.com.au/view/megafauna/zygomaturus-trilobus"><i>Zygomaturus</i></a><sup>†</sup>, <a href="http://www.seamonsters.qm.qld.gov.au/sitecore/content/QM%20Micro/Project%20DIG/Home/research/tropical-megafauna/species/phascolonus"><i>Phascolonus</i></a><sup>†</sup>, <a href="https://australian.museum/learn/animals/mammals/common-wombat/"><i>Vombatus ursinus</i></a>
@@ -34,7 +34,7 @@ More details and justification of the model components can be found in:
 - Bradshaw, CJA, CN Johnson, J Llewelyn, V Weisbecker, G Strona, F Saltré. 2021. <a href="http://doi.org/10.7554/eLife.63870">Relative demographic susceptibility does not explain the extinction chronology of Sahul’s megafauna</a>. <em>eLife</em> 10: e63870. doi:10.7554/eLife.63870
 - and its associated Github repository <a href="https://github.com/cjabradshaw/MegafaunaSusceptibility">here</a>
     
-2. Run projection scenarios using outputs from Step 1  (the following scripts are in the <a href="https://github.com/cjabradshaw/DensityFeedbackSims/tree/main/projectionscenarios"><em>projectionscenarios</em></a> folder):
+2. Run projection scenarios using outputs from Step 1 (the following scripts are in the <a href="https://github.com/cjabradshaw/DensityFeedbackSims/tree/main/projectionscenarios"><em>projectionscenarios</em></a> folder):
     - <code>stableCatastrophe.R</code>: stable, fixed carrying capacity (<em>K</em>) with generationally scaled catastrophe
     - <code>pulseCatastrophe.R</code>: stable, fixed <em>K</em> with 90% mortality pulse disturbance at 20<em>G</em> (generations); generationally scaled catastrophe
     - <code>r001-01Catastrophe.R</code>: stable, fixed <em>K</em> with density-independent mortality to cause mean population growth rate (<em>r</em>) to be -0.001 or -0.01 (user choice); generationally scaled catastrophe
