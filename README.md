@@ -69,7 +69,7 @@ More details and justification of the model components can be found in:
 - <code>reshape2</code>
 
 ## and following source-code file
-- <code>matrixOperators.R</code>
+- <code>matrixOperators.R</code> (in the <a href="https://github.com/cjabradshaw/DensityFeedbackSims/tree/main/source"><em>source</em></a> folder
 
 
 
