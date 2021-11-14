@@ -34,7 +34,7 @@ More details and justification of the model components can be found in:
 - Bradshaw, CJA, CN Johnson, J Llewelyn, V Weisbecker, G Strona, F Saltré. 2021. <a href="http://doi.org/10.7554/eLife.63870">Relative demographic susceptibility does not explain the extinction chronology of Sahul’s megafauna</a>. <em>eLife</em> 10: e63870. doi:10.7554/eLife.63870
 - and its associated Github repository <a href="https://github.com/cjabradshaw/MegafaunaSusceptibility">here</a>
     
-2. Run projection scenarios using outputs from Step 1:
+2. Run projection scenarios using outputs from Step 1  (the following scripts are in the <a href="https://github.com/cjabradshaw/DensityFeedbackSims/tree/main/projectionscenarios"><em>projectionscenarios</em></a> folder):
     - <code>stableCatastrophe.R</code>: stable, fixed carrying capacity (<em>K</em>) with generationally scaled catastrophe
     - <code>pulseCatastrophe.R</code>: stable, fixed <em>K</em> with 90% mortality pulse disturbance at 20<em>G</em> (generations); generationally scaled catastrophe
     - <code>r001-01Catastrophe.R</code>: stable, fixed <em>K</em> with density-independent mortality to cause mean population growth rate (<em>r</em>) to be -0.001 or -0.01 (user choice); generationally scaled catastrophe
@@ -69,7 +69,7 @@ More details and justification of the model components can be found in:
 - <code>reshape2</code>
 
 ## and following source-code file
-- <code>matrixOperators.R</code> (in the <a href="https://github.com/cjabradshaw/DensityFeedbackSims/tree/main/source"><em>source</em></a> folder
+- <code>matrixOperators.R</code> (in the <a href="https://github.com/cjabradshaw/DensityFeedbackSims/tree/main/source"><em>source</em></a> folder)
 
 
 
