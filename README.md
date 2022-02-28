@@ -52,7 +52,7 @@ More details and justification of the model components can be found in:
     - <code>StatKstochVarIncCatastrophe.R</code>: stable, mean stochastic <em>K</em> (variance doubles over projection interval); generationally scaled catastrophe
     - <code>StatKstochDeclCatastrophe.R</code>: declining, (-0.001) mean stochastic <em>K</em> (constant variance); generationally scaled catastrophe
     - <code>StatStableNoDFCatastrophe.R</code>: stable, mean trajectory with no density feedback (no <em>K</em>)
-5. Check a few assumptions (in the <a href="https://github.com/cjabradshaw/DensityFeedbackSims/tree/main/assumptionscheck">assumptionscheck</a> folder)
+5. Check a few assumptions (in the <a href="https://github.com/cjabradshaw/DensityFeedbackSims/tree/main/assumptionscheck"><em>assumptionscheck</em></a> folder)
     - <code>effectIncVarjuvSurv.R</code>: this script increases the variation in juvenile survival relative to adults (3x, declining linearly to equal adult variation by age at first reproduction (Diprotodon only)
     -  <code>DFfertDFsurv.R</code>: this script adds a feedback mechanism to fertility in addition to survival to examine how dispersing the feedback signal among > 1 vital rates affects the phenomenological model results (Diprotodon only)
 
