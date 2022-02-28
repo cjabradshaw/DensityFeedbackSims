@@ -1,7 +1,7 @@
 #############################################################################################################################
 ## density-feedback simulations
 ## base Leslie matrix models
-## assumptions check - effect of adding density feedback on both fertility and survival
+## assumptions check - effect of increasing variation in juvenile survival relative to adults
 ## Diprotodon only
 ## Corey Bradshaw & Salvador Herrando-Pérez
 ## Flinders University & Museo Nacional de Ciencias Naturales
@@ -92,7 +92,7 @@ linreg.ER <- function(x,y) { # where x and y are vectors of the same length; cal
 }
 
 ## source
-source("~/Documents/Papers/Other/Global human population/ms/PNAS/R1/matrixOperators.r")
+source("matrixOperators.r")
 
 
 ######################################################
@@ -340,15 +340,8 @@ DP.F.pred
 ## lnalpha = 0.214 + 0.263*lnM (https://dx.doi.org/10.1093%2Fgerona%2F62.2.149)
 DP.alpha1 <- ceiling(exp(-1.34 + (0.214*log(DP.mass*1000))))
 DP.alpha1
-#DP.alpha <- round(DP.alpha1 * VOMBAT.alpha.corr, 0)
 DP.alpha <- DP.alpha1
 
-
-## repredict rm from alpha according to Hone et al. 2010
-#rmalpha.int <- -0.16
-#rmalpha.slope <- -0.99
-#DP.rmalpha.pred <- 10^(log10(log(2*DP.F.pred)) - log10(DP.alpha))
-#DP.rmalpha.pred
 
 ## define m function with age
 DP.m.vec <- c(rep(0, DP.alpha-1), rep(0.75*DP.F.pred, round(DP.alpha/2,0)), rep(DP.F.pred, (DP.age.max+1-((DP.alpha-1+round(DP.alpha/2,0))))))
@@ -400,7 +393,10 @@ dx <- lx[1:(len.lx-1)]-lx[2:len.lx]
 qx <- dx/lx[1:(length(lx)-1)]
 DP.Sx <- c(0.99*DP.s.ad.yr, 1 - qx)
 plot(x, DP.Sx, pch=19, type="l", xlab="age (years)", ylab="Sx")
-DP.s.sd.vec <- 0.05*DP.Sx
+DP.sd.set <- 0.05
+DP.sd.juv <- seq(3*DP.sd.set, DP.sd.set, -((3*DP.sd.set - DP.sd.set) / (DP.alpha+1)))
+DP.sd.age <- c(DP.sd.juv, rep(DP.sd.set, length(DP.Sx) - length(DP.sd.juv)))
+DP.s.sd.vec <- DP.sd.age*DP.Sx # assume 3 times more variation in juveniles compared to adults
 
 ## create matrix
 DP.popmat <- matrix(data = 0, nrow=DP.age.max+1, ncol=DP.age.max+1)
@@ -421,7 +417,7 @@ R.val(DP.popmat.orig, DP.age.max) # reproductive value
 DP.gen.l <- G.val(DP.popmat.orig, DP.age.max) # mean generation length
 
 ## initial population vector
-area <- 500*500 # km × km = 250,000 km^2; equates to approximatley 10% larger than State of Victoria (227,444 km^2)
+area <- 500*500 # km × km = 250,000 km^2; equates to approximately 10% larger than State of Victoria (227,444 km^2)
 DP.pop.found <- round(area*DP.D.pred, 0) # founding population size (estimated density * 100 × 100 km region [10,000 km2])
 DP.init.vec <- DP.ssd * DP.pop.found
 
@@ -451,10 +447,10 @@ DP.n.pred <- colSums(DP.n.mat)
 yrs <- seq(yr.st, yr.end, 1)
 plot(yrs, log10(DP.n.pred),type="l",lty=2,pch=19,xlab="year",ylab="log10 N")
 
-# compensatory density feedback in survival
+# compensatory density feedback
 DP.K.max <- 1*DP.pop.found
 DP.K.vec <- c(1, DP.K.max/2, 0.75*DP.K.max, DP.K.max) 
-DP.red.vec <- c(1,0.98,0.965,0.93955)
+DP.red.vec <- c(1,0.98,0.96,0.9383)
 plot(DP.K.vec, DP.red.vec,pch=19,type="b")
 DP.Kred.dat <- data.frame(DP.K.vec, DP.red.vec)
 
@@ -476,32 +472,6 @@ DP.a.lp <- coef(DP.fit.lp)[1]
 DP.b.lp <- coef(DP.fit.lp)[2]
 DP.c.lp <- coef(DP.fit.lp)[3]
 
-
-# compensatory density feedback in fertility
-DP.Fred.vec <- c(1,0.985,0.972,0.957)
-plot(DP.K.vec, DP.Fred.vec,pch=19,type="b")
-DP.KFred.dat <- data.frame(DP.K.vec, DP.Fred.vec)
-
-# logistic power function a/(1+(x/b)^c)
-DP.Fparam.init <- c(1, 2*DP.K.max, 2)
-DP.Ffit.lp <- nls(DP.Fred.vec ~ a/(1+(DP.K.vec/b)^c), 
-                 data = DP.KFred.dat,
-                 algorithm = "port",
-                 start = c(a = DP.Fparam.init[1], b = DP.Fparam.init[2], c = DP.Fparam.init[3]),
-                 trace = TRUE,      
-                 nls.control(maxiter = 1000, tol = 1e-05, minFactor = 1/1024))
-DP.Ffit.lp.summ <- summary(DP.Ffit.lp)
-plot(DP.K.vec, DP.Fred.vec, pch=19,xlab="N",ylab="F reduction factor")
-DP.K.vec.cont <- seq(1,2*DP.pop.found,1)
-DP.Fpred.lp.fx <- coef(DP.Ffit.lp)[1]/(1+(DP.K.vec.cont/coef(DP.Ffit.lp)[2])^coef(DP.Ffit.lp)[3])
-lines(DP.K.vec.cont, DP.Fpred.lp.fx, lty=3,lwd=3,col="red")
-
-DP.Fa.lp <- coef(DP.Ffit.lp)[1]
-DP.Fb.lp <- coef(DP.Ffit.lp)[2]
-DP.Fc.lp <- coef(DP.Ffit.lp)[3]
-
-
-
 ## compensatory density-feedback deterministic model
 ## set population storage matrices
 DP.n.mat <- matrix(0, nrow=DP.age.max+1, ncol=(t+1))
@@ -511,13 +481,10 @@ DP.popmat <- DP.popmat.orig
 ## set up projection loop
 for (i in 1:t) {
   DP.totN.i <- sum(DP.n.mat[,i])
-  
   DP.pred.red <- as.numeric(DP.a.lp/(1+(DP.totN.i/DP.b.lp)^DP.c.lp))
-  DP.Fpred.red <- as.numeric(DP.Fa.lp/(1+(DP.totN.i/DP.Fb.lp)^DP.Fc.lp))
-  
   diag(DP.popmat[2:(DP.age.max+1),]) <- (DP.Sx[-(DP.age.max+1)])*DP.pred.red
   DP.popmat[DP.age.max+1,DP.age.max+1] <- (DP.Sx[DP.age.max+1])*DP.pred.red
-  DP.popmat[1,] <- DP.pred.p.mm * DP.Fpred.red
+  DP.popmat[1,] <- DP.pred.p.mm
   DP.n.mat[,i+1] <- DP.popmat %*% DP.n.mat[,i]
 }
 
@@ -534,7 +501,6 @@ itdiv <- iter/10
 DP.n.sums.mat <- matrix(data=NA, nrow=iter, ncol=(t+1))
 DP.s.arr <- DP.m.arr <- array(data=NA, dim=c(t+1, DP.age.max+1, iter))
 DP.pred.red.mn <- rep(0, iter)
-DP.Fpred.red.mn <- rep(0, iter)
 
 for (e in 1:iter) {
   DP.popmat <- DP.popmat.orig
@@ -544,7 +510,6 @@ for (e in 1:iter) {
   DP.s.mat[,1] <- DP.Sx
   DP.m.mat[,1] <- DP.pred.p.mm
   DP.pred.red.vec <- rep(0, t)
-  DP.Fpred.red.vec <- rep(0, t)
   
   for (i in 1:t) {
     # stochastic survival values
@@ -552,13 +517,12 @@ for (e in 1:iter) {
     DP.s.beta <- estBetaParams(DP.Sx, DP.s.sd.vec^2)$beta
     DP.s.stoch <- rbeta(length(DP.s.alpha), DP.s.alpha, DP.s.beta)
     
+    # stochastic fertility sampler (Gaussian)
+    DP.fert.stch <- rnorm(length(DP.popmat[,1]), DP.pred.p.mm, DP.m.sd.vec)
+    DP.m.arr[i,,e] <- ifelse(DP.fert.stch < 0, 0, DP.fert.stch)
+    
     DP.totN.i <- sum(DP.n.mat[,i], na.rm=T)
     DP.pred.red.vec[i] <- DP.a.lp/(1+(DP.totN.i/DP.b.lp)^DP.c.lp)
-    DP.Fpred.red.vec[i] <- DP.Fa.lp/(1+(DP.totN.i/DP.Fb.lp)^DP.Fc.lp)
-    
-    # stochastic fertility sampler (Gaussian)
-    DP.fert.stch <- (rnorm(length(DP.popmat[,1]), DP.pred.p.mm, DP.m.sd.vec)) * DP.Fpred.red.vec[i]
-    DP.m.arr[i,,e] <- ifelse(DP.fert.stch < 0, 0, DP.fert.stch)
     
     diag(DP.popmat[2:(DP.age.max+1),]) <- (DP.s.stoch[-(DP.age.max+1)])*DP.pred.red.vec[i]
     DP.popmat[DP.age.max+1,DP.age.max+1] <- (DP.s.stoch[DP.age.max+1])*DP.pred.red.vec[i]
@@ -571,7 +535,6 @@ for (e in 1:iter) {
   
   DP.n.sums.mat[e,] <- ((as.vector(colSums(DP.n.mat))/DP.pop.found))
   DP.pred.red.mn[e] <- mean(DP.pred.red.vec, na.rm=T)
-  DP.Fpred.red.mn[e] <- mean(DP.Fpred.red.vec, na.rm=T)
   
   if (e %% itdiv==0) print(e) 
   
@@ -581,92 +544,572 @@ DP.n.md <- apply(DP.n.sums.mat, MARGIN=2, median, na.rm=T) # mean over all itera
 DP.n.up <- apply(DP.n.sums.mat, MARGIN=2, quantile, probs=0.975, na.rm=T) # upper over all iterations
 DP.n.lo <- apply(DP.n.sums.mat, MARGIN=2, quantile, probs=0.025, na.rm=T) # lower over all iterations
 
-plot(yrs,DP.n.md,type="l", main = "", xlab="year", ylab="pN1", lwd=2, ylim=c(0.95*min(DP.n.lo),1.05*max(DP.n.up)))
-lines(yrs,DP.n.lo,lty=2,col="red",lwd=1.5)
-lines(yrs,DP.n.up,lty=2,col="red",lwd=1.5)
-
-save.image("DPddSFstable.RData")
+save.image("DPvSsd.RData")
 
 
-## STABLE (density feedback on S and F)
-## load matrices
-load("DPddSFstable.RData")
+###########################
+## Stable no catastrophe ##
+###########################
+
+## DIPROTODON (DP)
+load("DPvSsd.RData")
+iter <- 10000
+itdiv <- iter/10
+t <- (round(40*DP.gen.l, 0) - 1)
+
+## set storage matrices & vectors
+DP.n.sums.mat <- matrix(data=NA, nrow=iter, ncol=(t+1))
+DP.pred.red.mn <- rep(0, iter)
+
+for (e in 1:iter) {
+  DP.popmat <- DP.popmat.orig
+  
+  DP.n.mat <- matrix(0, nrow=DP.age.max+1,ncol=(t+1))
+  DP.n.mat[,1] <- DP.init.vec
+  DP.pred.red.vec <- rep(0, t)
+  
+  for (i in 1:t) {
+    # stochastic survival values
+    DP.s.alpha <- estBetaParams(DP.Sx, DP.s.sd.vec^2)$alpha
+    DP.s.beta <- estBetaParams(DP.Sx, DP.s.sd.vec^2)$beta
+    DP.s.stoch <- rbeta(length(DP.s.alpha), DP.s.alpha, DP.s.beta)
+    
+    # stochastic fertility sampler (Gaussian)
+    DP.fert.stch <- rnorm(length(DP.popmat[,1]), DP.pred.p.mm, DP.m.sd.vec)
+    
+    DP.totN.i <- sum(DP.n.mat[,i], na.rm=T)
+    DP.pred.red.vec[i] <- DP.a.lp/(1+(DP.totN.i/DP.b.lp)^DP.c.lp)
+    
+    diag(DP.popmat[2:(DP.age.max+1),]) <- (DP.s.stoch[-(DP.age.max+1)])*DP.pred.red.vec[i]
+    DP.popmat[DP.age.max+1,DP.age.max+1] <- (DP.s.stoch[DP.age.max+1])*DP.pred.red.vec[i]
+    DP.popmat[1,] <- ifelse(DP.fert.stch < 0, 0, DP.fert.stch)
+    DP.n.mat[,i+1] <- DP.popmat %*% DP.n.mat[,i]
+    
+  } # end i loop
+  
+  DP.n.sums.mat[e,] <- (as.vector(colSums(DP.n.mat)))
+  DP.pred.red.mn[e] <- mean(DP.pred.red.vec, na.rm=T)
+  
+  if (e %% itdiv==0) print(e) 
+  
+} # end e loop
+
+# remove first 2 generations as burn-in
+DP.n.sums.matb <- DP.n.sums.mat[, -(1:round(DP.gen.l*2, 0))]
+
+# total N
+DP.n.md <- apply(DP.n.sums.matb, MARGIN=2, median, na.rm=T) # mean over all iterations
+DP.n.up <- apply(DP.n.sums.matb, MARGIN=2, quantile, probs=0.975, na.rm=T) # upper over all iterations
+DP.n.lo <- apply(DP.n.sums.matb, MARGIN=2, quantile, probs=0.025, na.rm=T) # lower over all iterations
+
+# plot
+yrs <- 1:(dim(DP.n.sums.matb)[2])
+plot(yrs, DP.n.md, type="l", lty=1, lwd=0.8, ylim=c(min(DP.n.lo), max(DP.n.up)))
+lines(yrs,DP.n.up, lty=2, col="red", lwd=0.6)
+lines(yrs,DP.n.lo, lty=2, col="red", lwd=0.6)
+
+save.image("DPvSsdstablenocat.RData")
+rm(list = ls())
 
 
-##############
-## set up
-#############
-genL <- DP.gen.l
-Nmed <- DP.n.md
-Nmat <- DP.n.sums.mat
-predRed <- DP.pred.red.mn
-predFRed <- DP.Fpred.red.mn
-Ninit <- DP.pop.found
-Sb <- DP.b.lp
-popmat <- DP.popmat.orig
-mass <- DP.mass
-prim <- DP.alpha
 
-# drop first two generations (burn-in)
-plot(Nmed[1:round(20*genL, 0)], type="l")
-abline(v=2*genL,lty=2,lwd=0.7)
-burnin <- round(2*genL, 0)
-NmatB <- Nmat[,-(1:burnin)]
-RmatB <- RmatCalcFunc(NmatB)
-lenSeries <- dim(NmatB)[2]
 
-########################
-## apply to full matrix
-########################
-RWout <- unlist(apply(NmatB, MARGIN=1, RWfunc))
-EXout <- unlist(apply(NmatB, MARGIN=1, EXfunc))
-RLout <- unlist(apply(NmatB, MARGIN=1, RLfunc))
-GLout <- unlist(apply(NmatB, MARGIN=1, GLfunc))
+###################################
+## Stable 40G (with catastrophe) ##
+###################################
 
-RWAICs <- as.numeric(RWout[which(attr(RWout, "names") == "AICc")])
-EXAICs <- as.numeric(EXout[which(attr(EXout, "names") == "AICc")])
-RLAICs <- as.numeric(RLout[which(attr(RLout, "names") == "AICc")])
-GLAICs <- as.numeric(GLout[which(attr(GLout, "names") == "AICc")])
-AICtable <- data.frame(RWAICs,EXAICs,RLAICs,GLAICs)
-dAICtable <- as.data.frame(t(apply(AICtable, MARGIN=1, delta.IC)))
-wAICtable <- as.data.frame(t(apply(dAICtable, MARGIN=1, weight.IC)))
-DDwAICvec <- apply(wAICtable[,3:4], MARGIN=1, sum)  
-DIwAICvec <- apply(wAICtable[,1:2], MARGIN=1, sum)  
+## DIPROTODON (DP)
+load("DPvSsd.RData")
+iter <- 10000
+itdiv <- iter/10
+t <- (round(40*DP.gen.l, 0) - 1)
 
-DDtopMod <- apply(na.omit(wAICtable), MARGIN=1, which.max)
-DDtopModPr <- sum(ifelse(DDtopMod > 2, 1, 0)) / length(DDtopMod)
-DDtopModPr
+## set storage matrices & vectors
+DP.n.sums.mat <- matrix(data=NA, nrow=iter, ncol=(t+1))
+DP.pred.red.mn <- rep(0, iter)
 
-hist(DDwAICvec)
-hist(DIwAICvec)
-DDwAICmed <- median(DDwAICvec)
-DDwAICUp <- as.numeric(quantile(DDwAICvec, probs=0.975))
-DDwAICLo <- as.numeric(quantile(DDwAICvec, probs=0.025))
-DIwAICmed <- median(DIwAICvec)
-DIwAICUp <- as.numeric(quantile(DIwAICvec, probs=0.975))
-DIwAICLo <- as.numeric(quantile(DIwAICvec, probs=0.025))
+for (e in 1:iter) {
+  DP.popmat <- DP.popmat.orig
+  
+  DP.n.mat <- matrix(0, nrow=DP.age.max+1,ncol=(t+1))
+  DP.n.mat[,1] <- DP.init.vec
+  DP.pred.red.vec <- rep(0, t)
+  
+  for (i in 1:t) {
+    # stochastic survival values
+    DP.s.alpha <- estBetaParams(DP.Sx, DP.s.sd.vec^2)$alpha
+    DP.s.beta <- estBetaParams(DP.Sx, DP.s.sd.vec^2)$beta
+    DP.s.stoch <- rbeta(length(DP.s.alpha), DP.s.alpha, DP.s.beta)
+    
+    if (rbinom(1, 1, 0.14/DP.gen.l) == 1) { # catastrophe
+      cat.alpha <- estBetaParams(0.5, 0.05^2)$alpha
+      cat.beta <- estBetaParams(0.5, 0.05^2)$beta
+      DP.s.stoch <- DP.s.stoch * (rbeta(1, cat.alpha, cat.beta)) }
+    
+    # stochastic fertility sampler (Gaussian)
+    DP.fert.stch <- rnorm(length(DP.popmat[,1]), DP.pred.p.mm, DP.m.sd.vec)
+    
+    DP.totN.i <- sum(DP.n.mat[,i], na.rm=T)
+    DP.pred.red.vec[i] <- DP.a.lp/(1+(DP.totN.i/DP.b.lp)^DP.c.lp)
+    
+    diag(DP.popmat[2:(DP.age.max+1),]) <- (DP.s.stoch[-(DP.age.max+1)])*DP.pred.red.vec[i]
+    DP.popmat[DP.age.max+1,DP.age.max+1] <- (DP.s.stoch[DP.age.max+1])*DP.pred.red.vec[i]
+    DP.popmat[1,] <- ifelse(DP.fert.stch < 0, 0, DP.fert.stch)
+    DP.n.mat[,i+1] <- DP.popmat %*% DP.n.mat[,i]
+    
+  } # end i loop
+  
+  DP.n.sums.mat[e,] <- (as.vector(colSums(DP.n.mat)))
+  DP.pred.red.mn[e] <- mean(DP.pred.red.vec, na.rm=T)
+  
+  if (e %% itdiv==0) print(e) 
+  
+} # end e loop
 
-GLbs <- as.numeric(GLout[which(attr(GLout, "names") == "b")])
-GLbMed <- -median(GLbs)
-GLbUp <- -as.numeric(quantile(GLbs, probs=0.025))
-GLbLo <- -as.numeric(quantile(GLbs, probs=0.975))
+# remove first 2 generations as burn-in
+DP.n.sums.matb <- DP.n.sums.mat[, -(1:round(DP.gen.l*2, 0))]
 
-predRedMed <- 1 - median(predRed, na.rm=T)
-predRedUp <- 1 - quantile(predRed, probs=0.025, na.rm=T)
-predRedLo <- 1 - quantile(predRed, probs=0.975, na.rm=T)
-predRedErr <- mean(c((predRedMed-predRedLo),(predRedUp-predRedMed)))
+# total N
+DP.n.md <- apply(DP.n.sums.matb, MARGIN=2, median, na.rm=T) # mean over all iterations
+DP.n.up <- apply(DP.n.sums.matb, MARGIN=2, quantile, probs=0.975, na.rm=T) # upper over all iterations
+DP.n.lo <- apply(DP.n.sums.matb, MARGIN=2, quantile, probs=0.025, na.rm=T) # lower over all iterations
 
-predFRedMed <- 1 - median(predFRed, na.rm=T)
-predFRedUp <- 1 - quantile(predFRed, probs=0.025, na.rm=T)
-predFRedLo <- 1 - quantile(predFRed, probs=0.975, na.rm=T)
-predFRedErr <- mean(c((predFRedMed-predFRedLo),(predFRedUp-predFRedMed)))
+# plot
+yrs <- 1:(dim(DP.n.sums.matb)[2])
+plot(yrs, DP.n.md, type="l", lty=1, lwd=0.8, ylim=c(min(DP.n.lo), max(DP.n.up)))
+lines(yrs,DP.n.up, lty=2, col="red", lwd=0.6)
+lines(yrs,DP.n.lo, lty=2, col="red", lwd=0.6)
 
-q <- lenSeries - 1
-DDsStrength <- 1/as.numeric(Sb/Ninit)
-longev <- round(dim(popmat)[2] - 1, 0)
-genL <- round(G.val(popmat, longev), 2)
-M <- round(mass,0)
-alpha <- round(prim,0)
-print(c(predRedMed, predRedErr, GLbMed, GLbUp, GLbLo, DDwAICmed, DDwAICUp, DDwAICLo, DIwAICmed, DIwAICUp, DIwAICLo, q, longev, genL, M, alpha))
-out <- data.frame(predRedMed, predRedErr, GLbMed, GLbUp, GLbLo, DDwAICmed, DDwAICUp, DDwAICLo, DIwAICmed, DIwAICUp, DIwAICLo, q, longev, genL, M, alpha)
-out
+save.image("DPvSsdstable40G.RData")
+rm(list = ls())
+
+
+
+
+#############################################
+## HARVEST TO CAUSE DECLINE by r ~ -0.01   ##
+## i.e., median trajectory hits r ~ -0.01  ##
+## and median N goes ~ extinct by 40 G     ##
+#############################################
+
+  ## DIPROTODON (DP)
+  load("DPvSsd.RData")
+  harv.lim <- 1.04 # 0.95 gives target ~ -0.001
+  iter <- 10000
+  itdiv <- iter/10
+  prop.red <- 0.0153 * harv.lim
+  t <- (round(40*DP.gen.l, 0) - 1)
+  
+  ## set storage matrices & vectors
+  DP.n.sums.mat <- matrix(data=NA, nrow=iter, ncol=(t+1))
+  DP.pred.red.mn <- rep(0, iter)
+  harvest <- round(prop.red*DP.init.vec, 0)
+  sum(harvest)
+  
+  for (e in 1:iter) {
+    DP.popmat <- DP.popmat.orig
+    
+    DP.n.mat <- matrix(0, nrow=DP.age.max+1,ncol=(t+1))
+    DP.n.mat[,1] <- DP.init.vec
+    DP.pred.red.vec <- rep(0, t)
+    
+    for (i in 1:t) {
+      # stochastic survival values
+      DP.s.alpha <- estBetaParams(DP.Sx, DP.s.sd.vec^2)$alpha
+      DP.s.beta <- estBetaParams(DP.Sx, DP.s.sd.vec^2)$beta
+      DP.s.stoch <- rbeta(length(DP.s.alpha), DP.s.alpha, DP.s.beta)
+      
+      if (rbinom(1, 1, 0.14/DP.gen.l) == 1) { # catastrophe
+        cat.alpha <- estBetaParams(0.5, 0.05^2)$alpha
+        cat.beta <- estBetaParams(0.5, 0.05^2)$beta
+        DP.s.stoch <- DP.s.stoch * (rbeta(1, cat.alpha, cat.beta)) }
+      
+      # stochastic fertility sampler (Gaussian)
+      DP.fert.stch <- rnorm(length(DP.popmat[,1]), DP.pred.p.mm, DP.m.sd.vec)
+      
+      DP.totN.i <- sum(DP.n.mat[,i], na.rm=T)
+      DP.pred.red.vec[i] <- DP.a.lp/(1+(DP.totN.i/DP.b.lp)^DP.c.lp)
+      
+      diag(DP.popmat[2:(DP.age.max+1),]) <- (DP.s.stoch[-(DP.age.max+1)])*DP.pred.red.vec[i]
+      DP.popmat[DP.age.max+1,DP.age.max+1] <- (DP.s.stoch[DP.age.max+1])*DP.pred.red.vec[i]
+      DP.popmat[1,] <- ifelse(DP.fert.stch < 0, 0, DP.fert.stch)
+      DP.n.mat[,i+1] <- DP.popmat %*% DP.n.mat[,i]
+      DP.n.mat[,i+1] <- ifelse((DP.n.mat[,i+1] - harvest) < 0, 0, (DP.n.mat[,i+1] - harvest)) # proportional harvest
+      
+    } # end i loop
+    
+    DP.n.sums.mat[e,] <- (as.vector(colSums(DP.n.mat)))
+    DP.pred.red.mn[e] <- mean(DP.pred.red.vec, na.rm=T)
+    
+    if (e %% itdiv==0) print(e) 
+    
+  } # end e loop
+  
+  # remove first 2 generations as burn-in
+  DP.n.sums.matb <- DP.n.sums.mat[, -(1:round(DP.gen.l*2, 0))]
+  
+  # total N
+  DP.n.md <- apply(DP.n.sums.matb, MARGIN=2, median, na.rm=T) # mean over all iterations
+  DP.n.up <- apply(DP.n.sums.matb, MARGIN=2, quantile, probs=0.975, na.rm=T) # upper over all iterations
+  DP.n.lo <- apply(DP.n.sums.matb, MARGIN=2, quantile, probs=0.025, na.rm=T) # lower over all iterations
+  
+  # plot
+  yrs <- 1:(dim(DP.n.sums.matb)[2])
+  plot(yrs, DP.n.md, type="l", lty=1, lwd=0.8, ylim=c(min(DP.n.lo), max(DP.n.up)))
+  lines(yrs,DP.n.up, lty=2, col="red", lwd=0.6)
+  lines(yrs,DP.n.lo, lty=2, col="red", lwd=0.6)
+  
+  # mean rate of decline
+  rmed1 <- na.omit(log(DP.n.md[2:length(yrs)] / DP.n.md[1:(length(yrs)-1)]))
+  which.inf <- which(is.infinite(rmed1) == T)
+  if (length(which.inf) == 0) {
+    mean(rmed1)
+  } else {
+    mean(rmed1[-which.inf])
+  }
+  print("target = -0.01")
+  #save.image("DPvSsddeclSm.RData")
+  save.image("DPvSsddecl.RData")
+  rm(list = ls())
+  
+  
+  
+  
+  #####################################################
+  ## CARRYING CAPACITY DECLINES TO CAUSE r ~ -0.01   ##
+  ## i.e., median trajectory hits r ~ -0.01          ##
+  ## and median N goes ~ extinct by 40 G             ##
+  #####################################################
+  
+  ## DIPROTODON (DP)
+  load("DPvSsd.RData")
+  iter <- 10000
+  itdiv <- iter/10
+  t <- (round(40*DP.gen.l, 0) - 1)
+  divK <- 2.1 # 2.1 for r ~ -0.001
+  DP.b.lp.vec1 <- seq(DP.b.lp, DP.b.lp/divK, by = -((DP.b.lp - DP.b.lp/divK)/(t-1)))
+  DP.b.lp.vec2 <- rnorm(n=length(DP.b.lp.vec1), mean=DP.b.lp.vec1, sd=0.05*DP.b.lp.vec1[1])
+    #DP.b.lp.vec2 <- rnorm(n=t, mean=DP.b.lp, sd=0.05*DP.b.lp)
+  DP.b.lp.vec <- ifelse(DP.b.lp.vec2 < 10, 10, DP.b.lp.vec2)
+  plot(DP.b.lp.vec, type="l", lty=2)
+  mean(log(DP.b.lp.vec[2:length(DP.b.lp.vec)] / DP.b.lp.vec[1:(length(DP.b.lp.vec)-1)]))
+  
+  ## set storage matrices & vectors
+  DP.n.sums.mat <- matrix(data=NA, nrow=iter, ncol=(t+1))
+  DP.pred.red.mn <- rep(0, iter)
+
+  for (e in 1:iter) {
+    DP.popmat <- DP.popmat.orig
+    
+    DP.n.mat <- matrix(0, nrow=DP.age.max+1,ncol=(t+1))
+    DP.n.mat[,1] <- DP.init.vec
+    DP.pred.red.vec <- rep(0, t)
+    
+    for (i in 1:t) {
+      # stochastic survival values
+      DP.s.alpha <- estBetaParams(DP.Sx, DP.s.sd.vec^2)$alpha
+      DP.s.beta <- estBetaParams(DP.Sx, DP.s.sd.vec^2)$beta
+      DP.s.stoch <- rbeta(length(DP.s.alpha), DP.s.alpha, DP.s.beta)
+      
+      if (rbinom(1, 1, 0.14/DP.gen.l) == 1) { # catastrophe
+        cat.alpha <- estBetaParams(0.5, 0.05^2)$alpha
+        cat.beta <- estBetaParams(0.5, 0.05^2)$beta
+        DP.s.stoch <- DP.s.stoch * (rbeta(1, cat.alpha, cat.beta)) }
+      
+      # stochastic fertility sampler (Gaussian)
+      DP.fert.stch <- rnorm(length(DP.popmat[,1]), DP.pred.p.mm, DP.m.sd.vec)
+      
+      DP.totN.i <- sum(DP.n.mat[,i], na.rm=T)
+      DP.pred.red.vec[i] <- DP.a.lp/(1+(DP.totN.i/DP.b.lp.vec[i])^DP.c.lp)
+      
+      diag(DP.popmat[2:(DP.age.max+1),]) <- (DP.s.stoch[-(DP.age.max+1)])*DP.pred.red.vec[i]
+      DP.popmat[DP.age.max+1,DP.age.max+1] <- (DP.s.stoch[DP.age.max+1])*DP.pred.red.vec[i]
+      DP.popmat[1,] <- ifelse(DP.fert.stch < 0, 0, DP.fert.stch)
+      DP.n.mat[,i+1] <- DP.popmat %*% DP.n.mat[,i]
+      
+    } # end i loop
+    
+    DP.n.sums.mat[e,] <- (as.vector(colSums(DP.n.mat)))
+    DP.pred.red.mn[e] <- mean(DP.pred.red.vec, na.rm=T)
+    
+    if (e %% itdiv==0) print(e) 
+    
+  } # end e loop
+  
+  # remove first 2 generations as burn-in
+  DP.n.sums.matb <- DP.n.sums.mat[, -(1:round(DP.gen.l*2, 0))]
+  
+  # total N
+  DP.n.md <- apply(DP.n.sums.matb, MARGIN=2, median, na.rm=T) # mean over all iterations
+  DP.n.up <- apply(DP.n.sums.matb, MARGIN=2, quantile, probs=0.975, na.rm=T) # upper over all iterations
+  DP.n.lo <- apply(DP.n.sums.matb, MARGIN=2, quantile, probs=0.025, na.rm=T) # lower over all iterations
+  
+  # plot
+  yrs <- 1:(dim(DP.n.sums.matb)[2])
+  plot(yrs, DP.n.md, type="l", lty=1, lwd=0.8, ylim=c(min(DP.n.lo), max(DP.n.up)))
+  lines(yrs,DP.n.up, lty=2, col="red", lwd=0.6)
+  lines(yrs,DP.n.lo, lty=2, col="red", lwd=0.6)
+  
+  # mean rate of decline
+  rmed1 <- na.omit(log(DP.n.md[2:length(yrs)] / DP.n.md[1:(length(yrs)-1)]))
+  which.inf <- which(is.infinite(rmed1) == T)
+  if (length(which.inf) == 0) {
+    mean(rmed1)
+  } else {
+    mean(rmed1[-which.inf])
+  }
+  print("target = -0.01")
+  save.image("DPvSsddeclKsm.RData")
+  rm(list = ls())
+  
+   
+  
+  
+  #################################################################
+  ## CARRYING CAPACITY STABLE, STOCHASTICALLY RESAMPLED,         ##
+  ## CONSTANT VARIANCE, OR VARIANCE DOUBLES BY END OF PROJECTION ##
+  #################################################################
+  
+  ## DIPROTODON (DP)
+  load("DPvSsd.RData")
+  iter <- 10000
+  itdiv <- iter/10
+  t <- (round(40*DP.gen.l, 0) - 1)
+  divK <- 2.1 # 1800 # 2.1 for r ~ -0.001
+  #DP.b.lp.vec1 <- seq(DP.b.lp, DP.b.lp/divK, by = -((DP.b.lp - DP.b.lp/divK)/(t-1)))
+  #DP.b.lp.vec2 <- rnorm(n=length(DP.b.lp.vec1), mean=DP.b.lp.vec1, sd=0.05*DP.b.lp.vec1[1]) # increasing variance
+  DP.b.lp.vec2 <- rnorm(n=t, mean=DP.b.lp, sd=0.05*DP.b.lp) # stable variance
+  
+  SDpc <- 0.05
+  SD.incr <- seq(from=SDpc, to=2*SDpc, by=(2*SDpc-SDpc)/(t-1))
+  DP.b.lp.vec2 <- rep(NA,t)
+  for (f in 1:t) {
+    DP.b.lp.vec2[f] <- rnorm(1, mean=DP.b.lp, sd=SD.incr[f]*DP.b.lp)
+  }
+  
+  DP.b.lp.vec <- ifelse(DP.b.lp.vec2 < 10, 10, DP.b.lp.vec2)
+  plot(DP.b.lp.vec, type="l", lty=2)
+  mean(log(DP.b.lp.vec[2:length(DP.b.lp.vec)] / DP.b.lp.vec[1:(length(DP.b.lp.vec)-1)]))
+  
+  ## set storage matrices & vectors
+  DP.n.sums.mat <- matrix(data=NA, nrow=iter, ncol=(t+1))
+  DP.pred.red.mn <- rep(0, iter)
+  
+  for (e in 1:iter) {
+    DP.popmat <- DP.popmat.orig
+    
+    DP.n.mat <- matrix(0, nrow=DP.age.max+1,ncol=(t+1))
+    DP.n.mat[,1] <- DP.init.vec
+    DP.pred.red.vec <- rep(0, t)
+    
+    for (i in 1:t) {
+      # stochastic survival values
+      DP.s.alpha <- estBetaParams(DP.Sx, DP.s.sd.vec^2)$alpha
+      DP.s.beta <- estBetaParams(DP.Sx, DP.s.sd.vec^2)$beta
+      DP.s.stoch <- rbeta(length(DP.s.alpha), DP.s.alpha, DP.s.beta)
+      
+      if (rbinom(1, 1, 0.14/DP.gen.l) == 1) { # catastrophe
+        cat.alpha <- estBetaParams(0.5, 0.05^2)$alpha
+        cat.beta <- estBetaParams(0.5, 0.05^2)$beta
+        DP.s.stoch <- DP.s.stoch * (rbeta(1, cat.alpha, cat.beta)) }
+      
+      # stochastic fertility sampler (Gaussian)
+      DP.fert.stch <- rnorm(length(DP.popmat[,1]), DP.pred.p.mm, DP.m.sd.vec)
+      
+      DP.totN.i <- sum(DP.n.mat[,i], na.rm=T)
+      DP.pred.red.vec[i] <- DP.a.lp/(1+(DP.totN.i/DP.b.lp.vec[i])^DP.c.lp)
+      
+      diag(DP.popmat[2:(DP.age.max+1),]) <- (DP.s.stoch[-(DP.age.max+1)])*DP.pred.red.vec[i]
+      DP.popmat[DP.age.max+1,DP.age.max+1] <- (DP.s.stoch[DP.age.max+1])*DP.pred.red.vec[i]
+      DP.popmat[1,] <- ifelse(DP.fert.stch < 0, 0, DP.fert.stch)
+      DP.n.mat[,i+1] <- DP.popmat %*% DP.n.mat[,i]
+      
+    } # end i loop
+    
+    DP.n.sums.mat[e,] <- (as.vector(colSums(DP.n.mat)))
+    DP.pred.red.mn[e] <- mean(DP.pred.red.vec, na.rm=T)
+    
+    if (e %% itdiv==0) print(e) 
+    
+  } # end e loop
+  
+  # remove first 2 generations as burn-in
+  DP.n.sums.matb <- DP.n.sums.mat[, -(1:round(DP.gen.l*2, 0))]
+  
+  # total N
+  DP.n.md <- apply(DP.n.sums.matb, MARGIN=2, median, na.rm=T) # mean over all iterations
+  DP.n.up <- apply(DP.n.sums.matb, MARGIN=2, quantile, probs=0.975, na.rm=T) # upper over all iterations
+  DP.n.lo <- apply(DP.n.sums.matb, MARGIN=2, quantile, probs=0.025, na.rm=T) # lower over all iterations
+  
+  # plot
+  yrs <- 1:(dim(DP.n.sums.matb)[2])
+  plot(yrs, DP.n.md, type="l", lty=1, lwd=0.8, ylim=c(min(DP.n.lo), max(DP.n.up)))
+  lines(yrs,DP.n.up, lty=2, col="red", lwd=0.6)
+  lines(yrs,DP.n.lo, lty=2, col="red", lwd=0.6)
+  
+  #save.image("DPvSsdKstochVarInc.RData")
+  save.image("DPvSsdKstoch.RData")
+  rm(list = ls())
+  
+  
+
+
+  
+  ############################################################
+  ## NO DENSITY FEEDBACK; CATASTROPHE PROBABLITY SUFFICIENT ##
+  ## TO CAUSE APPROXIMATE STABILITY OVER 40 G               ##
+  ############################################################
+  
+  ## DIPROTODON (DP)
+  load("DPvSsd.RData")
+  iter <- 10000
+  itdiv <- iter/10
+  t <- (round(40*DP.gen.l, 0) - 1)
+  catProbInc <- 18
+  cat.prob <- ifelse(((0.14/DP.gen.l) * catProbInc) > 0.99, 0.99, ((0.14/DP.gen.l) * catProbInc))
+  cat.prob
+  catMag <- 0.5
+  
+  ## set storage matrices & vectors
+  DP.n.sums.mat <- matrix(data=NA, nrow=iter, ncol=(t+1))
+
+  for (e in 1:iter) {
+    DP.popmat <- DP.popmat.orig
+    
+    DP.n.mat <- matrix(0, nrow=DP.age.max+1,ncol=(t+1))
+    DP.n.mat[,1] <- DP.init.vec
+
+    for (i in 1:t) {
+      # stochastic survival values
+      DP.s.alpha <- estBetaParams(DP.Sx, DP.s.sd.vec^2)$alpha
+      DP.s.beta <- estBetaParams(DP.Sx, DP.s.sd.vec^2)$beta
+      DP.s.stoch <- rbeta(length(DP.s.alpha), DP.s.alpha, DP.s.beta)
+      
+      if (rbinom(1, 1, cat.prob) == 1) { # catastrophe
+        cat.alpha <- estBetaParams(catMag, 0.05^2)$alpha
+        cat.beta <- estBetaParams(catMag, 0.05^2)$beta
+        DP.s.stoch <- DP.s.stoch * (rbeta(1, cat.alpha, cat.beta)) }
+      
+      # stochastic fertility sampler (Gaussian)
+      DP.fert.stch <- rnorm(length(DP.popmat[,1]), DP.pred.p.mm, DP.m.sd.vec)
+      
+      DP.totN.i <- sum(DP.n.mat[,i], na.rm=T)
+
+      diag(DP.popmat[2:(DP.age.max+1),]) <- (DP.s.stoch[-(DP.age.max+1)])
+      DP.popmat[DP.age.max+1,DP.age.max+1] <- (DP.s.stoch[DP.age.max+1])
+      DP.popmat[1,] <- ifelse(DP.fert.stch < 0, 0, DP.fert.stch)
+      DP.n.mat[,i+1] <- DP.popmat %*% DP.n.mat[,i]
+      
+    } # end i loop
+    
+    DP.n.sums.mat[e,] <- (as.vector(colSums(DP.n.mat)))
+
+    if (e %% itdiv==0) print(e) 
+    
+  } # end e loop
+  
+  # remove first 2 generations as burn-in
+  DP.n.sums.matb <- DP.n.sums.mat[, -(1:round(DP.gen.l*2, 0))]
+  
+  # total N
+  DP.n.md <- apply(DP.n.sums.matb, MARGIN=2, mean, na.rm=T) # mean over all iterations
+  DP.n.up <- apply(DP.n.sums.matb, MARGIN=2, quantile, probs=0.975, na.rm=T) # upper over all iterations
+  DP.n.lo <- apply(DP.n.sums.matb, MARGIN=2, quantile, probs=0.025, na.rm=T) # lower over all iterations
+  
+  # plot
+  yrs <- 1:(dim(DP.n.sums.matb)[2])
+  plot(yrs, DP.n.md, type="l", lty=1, lwd=0.8)
+
+  # mean rate of decline
+  rmed1 <- na.omit(log(DP.n.md[2:length(yrs)] / DP.n.md[1:(length(yrs)-1)]))
+  which.inf <- which(is.infinite(rmed1) == T)
+  if (length(which.inf) == 0) {
+    mean(rmed1)
+  } else {
+    mean(rmed1[-which.inf])
+  }
+
+  save.image("DPvSsdstableCat.RData")
+  rm(list = ls())
+  
+
+
+    
+  ################################################################
+  ## ESTIMATE PHENOMENOLOGICAL GOMPERTZ DENSITY-FEEDBACK SIGNAL ##
+  ## (choose which scenario to load)
+  ################################################################
+  load("DPvSsdstablenocat.RData") # stable, no catastrophe
+  load("DPvSsdstable40G.RData") # stable, with catastrophe
+  load("DPvSsddeclSm.RData") # r = 0.001
+  load("DPvSsddecl.RData") # r = -0.01
+  load("DPvSsdKstoch.RData") # stochastic K (K constant)
+  load("DPvSsdKstochVarInc.RData") # stochastic K (K variance increasing)
+  load("DPvSsddeclKsm.RData") # stochastic K, but declining at -0.001
+  load("DPvSsdstableCat.RData") # no density feedback; stable from catastrophes
+  
+  
+  ## return Gompertz signal
+  genL <- DP.gen.l; Nmed <- DP.n.md; Nmat1 <- DP.n.sums.matb; zeroFix <- which(rowSums(Nmat1)==0)
+  if (length(zeroFix)==0) {
+    Nmat2 <- Nmat1
+  } else {
+    Nmat2 <- Nmat1[-zeroFix,]
+  }
+  lenvec <- apply(Nmat2, MARGIN=1, count_if, criterion=gt(0))
+  lenvecthree <- which(lenvec < 3)
+  if (length(lenvecthree)==0) {
+    Nmat <- Nmat2
+  } else {
+    Nmat <- Nmat2[-lenvecthree,]
+  }
+  predRed <- DP.pred.red.mn; Ninit <- DP.pop.found; Sb <- DP.b.lp; popmat <- DP.popmat.orig; mass <- DP.mass; prim <- DP.alpha
+  lenSeries <- dim(Nmat)[2]
+  
+  RWout <- unlist(apply(Nmat, MARGIN=1, RWfunc))
+  EXout <- unlist(apply(Nmat, MARGIN=1, EXfunc))
+  RLout <- unlist(apply(Nmat, MARGIN=1, RLfunc))
+  GLout <- unlist(apply(Nmat, MARGIN=1, GLfunc))
+  RWAICs <- as.numeric(RWout[which(attr(RWout, "names") == "AICc")])
+  EXAICs <- as.numeric(EXout[which(attr(EXout, "names") == "AICc")])
+  RLAICs <- as.numeric(RLout[which(attr(RLout, "names") == "AICc")])
+  GLAICs <- as.numeric(GLout[which(attr(GLout, "names") == "AICc")])
+  AICtable <- data.frame(RWAICs,EXAICs,RLAICs,GLAICs)
+  dAICtable <- as.data.frame(t(apply(AICtable, MARGIN=1, delta.IC)))
+  wAICtable <- as.data.frame(t(apply(dAICtable, MARGIN=1, weight.IC)))
+  DP.DDwAICvec <- apply(wAICtable[,3:4], MARGIN=1, sum)  
+  DP.DIwAICvec <- apply(wAICtable[,1:2], MARGIN=1, sum)  
+  DP.DDw.dat <- data.frame(rep("DP",length(DP.DDwAICvec)), DP.DDwAICvec)
+  colnames(DP.DDw.dat) <- c("SP","DDwAIC")
+  
+  DP.DDwAICmed <- median(DP.DDwAICvec, na.rm=T)
+  DP.DDwAICUp <- as.numeric(quantile(DP.DDwAICvec, probs=0.975, na.rm=T))
+  DP.DDwAICLo <- as.numeric(quantile(DP.DDwAICvec, probs=0.025, na.rm=T))
+  
+  DP.GLbs <- as.numeric(GLout[which(attr(GLout, "names") == "b")])
+  DP.GLbMed <- -(median(DP.GLbs, na.rm=T))
+  DP.GLbLo <- -(as.numeric(quantile(DP.GLbs, probs=0.975, na.rm=T)))
+  DP.GLbUp <- -(as.numeric(quantile(DP.GLbs, probs=0.025, na.rm=T)))
+  
+  DP.RLbs <- as.numeric(RLout[which(attr(RLout, "names") == "b")])
+  DP.RLbMed <- -(median(DP.RLbs, na.rm=T))
+  DP.RLbLo <- -(as.numeric(quantile(DP.RLbs, probs=0.975, na.rm=T)))
+  DP.RLbUp <- -(as.numeric(quantile(DP.RLbs, probs=0.025, na.rm=T)))
+  
+  DP.predRedMed <- 1 - median(predRed, na.rm=T)
+  DP.predRedUp <- 1 - quantile(predRed, probs=0.025, na.rm=T)
+  DP.predRedLo <- 1 - quantile(predRed, probs=0.975, na.rm=T)
+  DP.predRedErr <- mean(c((DP.predRedMed-DP.predRedLo),(DP.predRedUp-DP.predRedMed)))
+  
+  DP.q <- lenSeries - 1
+  DP.DDsStrength <- 1/(as.numeric(Sb/Ninit))
+  DP.longev <- round(dim(popmat)[2] - 1, 0)
+  DP.genL <- round(G.val(popmat, DP.longev), 2)
+  DP.M <- round(mass,0)
+  DP.alpha <- round(prim,0)
+  DP.out <- data.frame("DP",DP.predRedMed, DP.predRedErr, DP.GLbMed, DP.GLbUp, DP.GLbLo, DP.DDwAICmed, DP.DDwAICUp, DP.DDwAICLo, DP.q, DP.longev, DP.genL, DP.M, DP.alpha)
+  colnames(DP.out) <- c("SP","predRedMd","predRedE","GLbMd","GLbUp","GLbLo","DDwAICmd","DDwAICup","DDwAIClo","q","longev","G","M","alpha")
+  DP.out
+  
+  
+  
