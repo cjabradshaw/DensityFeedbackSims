@@ -21,7 +21,7 @@ September 2021 (updated February 2022) <br>
 
 1. Run initial base population models (<code>baseModels.R</code>; in the <a href="https://github.com/cjabradshaw/DensityFeedbackSims/tree/main/basemodels"><em>basemodels</em></a> folder)
 
-<img align="right" src="www/Palorchestes.png" alt="thylacine" width="200" style="margin-top: 20px">
+<img align="right" src="www/Palorchestes.png" alt="thylacine" width="250" style="margin-top: 20px">
 <img align="left" src="www/Simosthenurus occidentalis.png" alt="thylacine" width="200" style="margin-top: 20px">
 Models are based on the demography of the following genera/species:
 - VOMBATIFORM HERBIVORES: <a href="https://australian.museum/learn/australia-over-time/extinct-animals/diprotodon-optatum/"><i>Diprotodon</i></a><sup>†</sup>, <a href="https://australian.museum/learn/animals/mammals/palorchestes-azeal/"><i>Palorchestes</i></a><sup>†</sup>, <a href="http://www.megafauna.com.au/view/megafauna/zygomaturus-trilobus"><i>Zygomaturus</i></a><sup>†</sup>, <a href="http://www.seamonsters.qm.qld.gov.au/sitecore/content/QM%20Micro/Project%20DIG/Home/research/tropical-megafauna/species/phascolonus"><i>Phascolonus</i></a><sup>†</sup>, <a href="https://australian.museum/learn/animals/mammals/common-wombat/"><i>Vombatus ursinus</i></a>
