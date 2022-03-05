@@ -1,6 +1,6 @@
 # Density-Feedback Simulations
 
-<img align="right" src="thylacine.png" alt="thylacine" width="200" style="margin-top: 20px">
+<img align="right" src="www/Thylacoleo carnifex.png" alt="thylacine" width="200" style="margin-top: 20px">
 
 Stochastic simulations of population abundance with known component density feedback on survival to test for ability to return ensemble feedback signal
 
@@ -21,8 +21,10 @@ September 2021 (updated February 2022) <br>
 
 1. Run initial base population models (<code>baseModels.R</code>; in the <a href="https://github.com/cjabradshaw/DensityFeedbackSims/tree/main/basemodels"><em>basemodels</em></a> folder)
 
+<img align="right" src="www/Palorchestes.png" alt="thylacine" width="200" style="margin-top: 20px">
 Models are based on the demography of the following genera/species:
 - VOMBATIFORM HERBIVORES: <a href="https://australian.museum/learn/australia-over-time/extinct-animals/diprotodon-optatum/"><i>Diprotodon</i></a><sup>†</sup>, <a href="https://australian.museum/learn/animals/mammals/palorchestes-azeal/"><i>Palorchestes</i></a><sup>†</sup>, <a href="http://www.megafauna.com.au/view/megafauna/zygomaturus-trilobus"><i>Zygomaturus</i></a><sup>†</sup>, <a href="http://www.seamonsters.qm.qld.gov.au/sitecore/content/QM%20Micro/Project%20DIG/Home/research/tropical-megafauna/species/phascolonus"><i>Phascolonus</i></a><sup>†</sup>, <a href="https://australian.museum/learn/animals/mammals/common-wombat/"><i>Vombatus ursinus</i></a>
+<img align="left" src="www/Simosthenurus occidentalis.png" alt="thylacine" width="200" style="margin-top: 20px">
 - MACROPODIFORM HERBIVORES: <a href="http://www.seamonsters.qm.qld.gov.au/sitecore/content/QM%20Micro/Project%20DIG/Home/research/tropical-megafauna/species/protemnodon"><i>Protemnodon</i></a><sup>†</sup>, <a href="https://australian.museum/learn/animals/mammals/red-kangaroo/"><i>Osphranter rufus</i></a>, <a href="https://en.wikipedia.org/wiki/Sthenurus"><i>Sthenurus</i></a><sup>†</sup>, <a href="http://www.megafauna.com.au/view/megafauna/simosthenurus-occidentalis"><i>Simosthenurus</i></a><sup>†</sup>, <a href="https://australian.museum/learn/australia-over-time/extinct-animals/procoptodon-goliah/"><i>Procoptodon</i></a><sup>†</sup>, <a href="https://en.wikipedia.org/wiki/Sthenurinae"><i>Metasthenurus</i></a><sup>†</sup>, <a href="https://bie.ala.org.au/species/urn:lsid:biodiversity.org.au:afd.taxon:4bd05bcb-614d-40b0-b81f-75ac14ea4afd"><i>Notamacropus</i></a>
 - LARGE BIRDS: <a href="https://australian.museum/learn/australia-over-time/extinct-animals/genyornis-newtoni/"><i>Genyornis</i></a><sup>†</sup>, <a href="https://www.birdlife.org.au/bird-profile/emu"><i>Dromaius novaehollandiae</i></a>, <a href="https://www.birdlife.org.au/bird-profile/australian-brush-turkey"><i>Alectura lathami</i></a>
 - CARNIVORES: <a href="https://australian.museum/learn/animals/mammals/tasmanian-devil/"><i>Sarcophilus</i></a>, <a href="https://australian.museum/learn/australia-over-time/extinct-animals/the-thylacine/"><i>Thylacinus</i></a><sup>†</sup>, <a href="https://australian.museum/learn/animals/mammals/thylacoleo-carnifex/"><i>Thylacoleo</i></a><sup>†</sup>, <a href="https://australian.museum/learn/animals/mammals/spotted-tailed-quoll/"><i>Dasyurus</i></a>
@@ -52,7 +54,7 @@ More details and justification of the model components can be found in:
     - <code>StatKstochVarIncCatastrophe.R</code>: stable, mean stochastic <em>K</em> (variance doubles over projection interval); generationally scaled catastrophe
     - <code>StatKstochDeclCatastrophe.R</code>: declining, (-0.001) mean stochastic <em>K</em> (constant variance); generationally scaled catastrophe
     - <code>StatStableNoDFCatastrophe.R</code>: stable, mean trajectory with no density feedback (no <em>K</em>)
-<img align="right" src="Diprotodon 2.png" alt="thylacine" width="300" style="margin-top: 20px">
+<img align="right" src="www/Diprotodon 2.png" alt="thylacine" width="300" style="margin-top: 20px">
 5. Check a few assumptions (in the <a href="https://github.com/cjabradshaw/DensityFeedbackSims/tree/main/assumptionscheck"><em>assumptionscheck</em></a> folder)
     - <code>effectIncVarjuvSurv.R</code>: this script increases the variation in juvenile survival relative to adults (3x, declining linearly to equal adult variation by age at first reproduction) (<em>Diprotodon</em> only)
     -  <code>DFfertDFsurv.R</code>: this script adds a feedback mechanism to fertility in addition to survival to examine how dispersing the feedback signal among > 1 vital rates affects the phenomenological model results (<em>Diprotodon</em> only)
