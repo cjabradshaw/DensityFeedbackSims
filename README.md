@@ -31,6 +31,7 @@ Models are based on the demography of the following genera/species:<br>
 <br>
 <br>
 <sup><small>† extinct</small></sup>
+<br>
 
 More details and justification of the model components can be found in:
 - Bradshaw, CJA, CN Johnson, J Llewelyn, V Weisbecker, G Strona, F Saltré. 2021. <a href="http://doi.org/10.7554/eLife.63870">Relative demographic susceptibility does not explain the extinction chronology of Sahul’s megafauna</a>. <em>eLife</em> 10: e63870. doi:10.7554/eLife.63870
