@@ -28,7 +28,7 @@ Models are based on the demography of the following genera/species:<br>
 - <strong>LARGE BIRDS</strong>: <a href="https://australian.museum/learn/australia-over-time/extinct-animals/genyornis-newtoni/"><i>Genyornis</i></a><sup>†</sup>, <a href="https://www.birdlife.org.au/bird-profile/emu"><i>Dromaius novaehollandiae</i></a>, <a href="https://www.birdlife.org.au/bird-profile/australian-brush-turkey"><i>Alectura lathami</i></a><br>
 - <strong>CARNIVORES</strong>: <a href="https://australian.museum/learn/animals/mammals/tasmanian-devil/"><i>Sarcophilus</i></a>, <a href="https://australian.museum/learn/australia-over-time/extinct-animals/the-thylacine/"><i>Thylacinus</i></a><sup>†</sup>, <a href="https://australian.museum/learn/animals/mammals/thylacoleo-carnifex/"><i>Thylacoleo</i></a><sup>†</sup>, <a href="https://australian.museum/learn/animals/mammals/spotted-tailed-quoll/"><i>Dasyurus</i></a><br>
 - <strong>MONOTREMES</strong>: <a href="https://www.artistwd.com/joyzine/australia/articles/megafauna/megalibgwilia_ramsayi.php"><i>Megalibgwilia</i></a><sup>†</sup>, <a href="https://www.bushheritage.org.au/species/echidna"><i>Tachyglossus</i></a>
-
+<br>
 <sup><small>† extinct</small></sup>
 
 More details and justification of the model components can be found in:
