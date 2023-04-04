@@ -6,7 +6,7 @@ Stochastic simulations of population abundance with known component density feed
 
 R code accompanying paper:
 
-<a href="http://scholar.google.com.au/citations?sortby=pubdate&hl=en&user=1sO0O3wAAAAJ&view_op=list_works">Bradshaw, CJA</a>, <a href="https://scholar.google.com.au/citations?hl=en&user=-BSGg1MAAAAJ">S Herrando-Pérez</a>. 2023. Logistic-growth models measuring density feedback are sensitive to population declines, but not fluctuating carrying capacity. <em>Ecology and Evolution</em> (accepted 31.03.2023)
+<a href="http://scholar.google.com.au/citations?sortby=pubdate&hl=en&user=1sO0O3wAAAAJ&view_op=list_works">Bradshaw, CJA</a>, <a href="https://scholar.google.com.au/citations?hl=en&user=-BSGg1MAAAAJ">S Herrando-Pérez</a>. 2023. <a href="http://doi.org/10.1002/ece3.10010">Logistic-growth models measuring density feedback are sensitive to population declines, but not fluctuating carrying capacity</a>. <em>Ecology and Evolution</em> doi:10.1002/ece3.10010
 
 Previous (out-of-date) version available as a preprint here:
 
