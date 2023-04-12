@@ -1,4 +1,4 @@
-# Density-Feedback Simulations
+# Density-feedback simulations
 
 <img align="right" src="www/Thylacoleo carnifex.png" alt="Thylacoleo" width="300" style="margin-top: 20px">
 
